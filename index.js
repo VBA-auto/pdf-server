@@ -3,20 +3,12 @@ import { chromium } from "playwright";
 import cors from "cors";
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 5000;
 
-// CORS setup
-const allowedOrigins = ["http://localhost:3000", "https://preparationvae.fr"];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "*",
   })
 );
 
