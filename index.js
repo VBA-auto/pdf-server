@@ -1,8 +1,27 @@
 import express from "express";
 import { chromium } from "playwright";
+import cors from "cors";
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+// CORS setup
+const allowedOrigins = ["http://localhost:3000", "https://preparationvae.fr"];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
+// Optional: Parse JSON body if needed
+app.use(express.json());
 
 app.get("/download", async (req, res) => {
   const url = req.query.url;
@@ -13,7 +32,7 @@ app.get("/download", async (req, res) => {
 
   try {
     await page.goto(url, { waitUntil: "networkidle", timeout: 90000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1000); // small wait for animations etc.
 
     const pdf = await page.pdf({
       format: "A4",
